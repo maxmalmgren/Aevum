@@ -1,4 +1,5 @@
 #include "Resolution.h"
+#include "high_resolution_timer.h"
 #include "IEventPeriod.h"
 #include <vector>
 #include <Windows.h>
@@ -33,10 +34,8 @@ namespace Max { namespace Aevum {
 			TimerEventTicket^ AddRepeatedlyWithDelay(unsigned int delay, System::Action^ action);
 			TimerEventTicket^ AddIntervalEvent(unsigned int period, System::Action^ action);
 		private:
-			unsigned int res;
-			System::IntPtr this_ptr;
+			high_resolution_timer *timer;
 			System::Collections::Generic::List<System::Action^>^ actions;
-			std::vector<HANDLE> *timers;
 		};
 	}
 }

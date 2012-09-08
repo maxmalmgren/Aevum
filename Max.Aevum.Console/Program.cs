@@ -15,18 +15,19 @@ namespace Max.Aevum.Console
             int count = 0;
             DateTime start = DateTime.Now;
 
+            //var ticket = timer.Execute(() =>
+            //                               {
+            //                                   count++;
+            //                                   System.Console.WriteLine(count);
+            //                               }).At(Every.Milliseconds(10));
+
             var ticket = timer.Execute(() =>
                                            {
                                                count++;
-                                               System.Console.WriteLine(count);
-                                           }).At(Every.Milliseconds(10));
+                                               System.Console.WriteLine("Exiting sleep after: " + (DateTime.Now - start).TotalMilliseconds);
+                                           }).RepeatedlyWithDelay(1);
 
-
-            Thread.Sleep(4000);
-             
-            timer.StopEvent(ticket);
-
-            Thread.Sleep(6000);
+            Thread.Sleep(400);
         }
     }
 }

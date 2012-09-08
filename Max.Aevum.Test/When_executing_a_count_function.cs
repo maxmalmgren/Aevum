@@ -21,7 +21,7 @@ namespace Max.Aevum.Test
                                      count++;
                                  };
 
-                                 timer.Execute(action).At(Interval.Milliseconds(1));
+                                 timer.Execute(action).At(Every.Milliseconds(1));
                                  Thread.Sleep(10000);
                              }
                          };
