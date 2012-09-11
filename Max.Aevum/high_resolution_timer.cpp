@@ -3,6 +3,22 @@
 
 namespace Max { namespace Aevum {
 
+		void assert_is_within_bounds(unsigned int res);
+
+		high_resolution_timer::high_resolution_timer(unsigned int resolution) : res(resolution), timers(), callback_datas(), action_cache()
+		{
+			assert_is_within_bounds(res);
+			timeBeginPeriod(res);
+		}
+
+		high_resolution_timer::~high_resolution_timer()
+		{
+			timeEndPeriod(res);
+
+			for(auto i = timers.begin(); i != timers.end(); i++)
+				DeleteTimerQueueTimer(NULL, *i, NULL);
+		}
+
 		DWORD high_resolution_timer::cancel_event(PHANDLE handle)
 		{
 			timers.erase(std::remove(timers.begin(), timers.end(), *handle), timers.end());
@@ -40,14 +56,6 @@ namespace Max { namespace Aevum {
 			data->callback();
 		}
 
-		high_resolution_timer::~high_resolution_timer()
-		{
-			timeEndPeriod(res);
-
-			for(auto i = timers.begin(); i != timers.end(); i++)
-				DeleteTimerQueueTimer(NULL, *i, NULL);
-		}
-
 		PHANDLE add_timer(high_resolution_timer &timer)
 		{
 			timer.timers.push_back(HANDLE());
@@ -61,11 +69,6 @@ namespace Max { namespace Aevum {
 				first();
 				second();
 			};
-		}
-
-		std::function<void()> wrap(action callback)
-		{
-			return [=](){ callback(); };
 		}
 
 		PHANDLE high_resolution_timer::add_non_repeating_event(unsigned int delay, std::function<void()> callback, DWORD &error)
@@ -91,7 +94,7 @@ namespace Max { namespace Aevum {
 
 			auto combined = combine(std::function<void()>(callback), [=]() {
 																			DWORD error;
-																			add_repeatedly_with_delay(delay, callback, error); 
+																			add_repeatedly_with_delay(delay, callback, error);
 																		  });
 
 			return add_non_repeating_event(delay, combined, error);
@@ -115,12 +118,6 @@ namespace Max { namespace Aevum {
 
 			if(res.first > resolution || res.second < resolution)
 				throw gcnew System::Exception();
-		}
-
-		high_resolution_timer::high_resolution_timer(unsigned int resolution) : res(resolution), timers(), callback_datas(), action_cache()
-		{
-			assert_is_within_bounds(res);
-			timeBeginPeriod(res);
 		}
 	}
 }
